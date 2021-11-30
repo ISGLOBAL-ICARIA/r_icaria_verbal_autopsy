@@ -47,3 +47,28 @@ run <- codeVA(
   write     = T,
   directory = getwd()
 )
+
+# Read output file and format it
+kResultFilename <- "VA5_result.csv"
+output <- read.csv(kResultFilename)
+
+id.colums <- c(
+  "meta.instanceID",                                 # ODK UUID
+  "consented.deceased_CRVS.info_on_deceased.ICA001"  # ICARIA Study Number
+)
+va.data.ids <- va.data[, id.colums]
+colnames(va.data.ids) <- c("ID", "STUDYNUM")
+
+output <- merge(va.data.ids, output)
+
+kVersionFormat <- "%Y%m%d"
+kOutputFile <- "icaria_va_output"
+kCSVExtension <- ".csv"
+data.date <- Sys.time()
+output.filename <- paste0(
+  kOutputFile, 
+  "_", 
+  format(data.date, format = kVersionFormat), 
+  kCSVExtension
+)
+write.csv(output, file = output.filename, row.names = F)
